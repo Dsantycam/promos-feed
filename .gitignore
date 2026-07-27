@@ -1,0 +1,11 @@
+# Artefactos de construcción
+/build/
+*.zip
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/

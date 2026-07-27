@@ -1,0 +1,24 @@
+/**
+ * Ajustes solo para la vista previa dentro del editor de bloques.
+ */
+
+.wp-block-promos-feed-feed .pf-feed {
+	pointer-events: none; /* Evita clics accidentales en enlaces durante la edición. */
+}
+
+.wp-block-promos-feed-feed .pf-item:hover {
+	transform: none; /* Sin animación de hover mientras editas. */
+	box-shadow: var( --pf-shadow );
+}
+
+.wp-block-promos-feed-feed .pf-item:hover .pf-item__media img {
+	transform: none;
+}
+
+/* Mensaje cuando el bloque aún no tiene promos. */
+.wp-block-promos-feed-feed .pf-feed--empty {
+	min-height: 120px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

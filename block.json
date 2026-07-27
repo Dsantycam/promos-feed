@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "promos-feed/feed",
+	"version": "1.0.0",
+	"title": "Promos Feed",
+	"category": "widgets",
+	"icon": "megaphone",
+	"description": "Muestra tus promociones en un feed personalizable: grid, carrusel, destacado, lista o mosaico.",
+	"keywords": [ "promo", "promociones", "ofertas", "feed", "carrusel" ],
+	"textdomain": "promos-feed",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"attributes": {
+		"layout":          { "type": "string",  "default": "grid" },
+		"count":           { "type": "number",  "default": 6 },
+		"columns":         { "type": "number",  "default": 3 },
+		"gap":             { "type": "number",  "default": 16 },
+		"radius":          { "type": "number",  "default": 16 },
+		"shadow":          { "type": "boolean", "default": true },
+		"accentColor":     { "type": "string",  "default": "#e11d48" },
+		"bgColor":         { "type": "string",  "default": "#ffffff" },
+		"textColor":       { "type": "string",  "default": "#111827" },
+		"imageRatio":      { "type": "string",  "default": "1/1" },
+		"order":           { "type": "string",  "default": "menu_order" },
+		"showImage":       { "type": "boolean", "default": true },
+		"showTitle":       { "type": "boolean", "default": true },
+		"showDescription": { "type": "boolean", "default": true },
+		"showPrice":       { "type": "boolean", "default": true },
+		"showBadge":       { "type": "boolean", "default": true },
+		"showDates":       { "type": "boolean", "default": false },
+		"showLink":        { "type": "boolean", "default": true },
+		"autoplay":        { "type": "boolean", "default": false },
+		"autoplaySpeed":   { "type": "number",  "default": 4 },
+		"showArrows":      { "type": "boolean", "default": true },
+		"showDots":        { "type": "boolean", "default": true },
+		"featuredBig":     { "type": "boolean", "default": true }
+	},
+	"editorScript": "pf-block-editor",
+	"style": "pf-feed-style",
+	"editorStyle": "pf-feed-editor-style",
+	"viewScript": "pf-feed-view"
+}

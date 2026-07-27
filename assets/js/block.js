@@ -115,6 +115,22 @@
 							setAttributes( { imageRatio: v } );
 						},
 					} ),
+					isActive( 'image' )
+						? el( SelectControl, {
+								label: __( 'Calidad de imagen', 'promos-feed' ),
+								value: attributes.imageSize,
+								help: __( 'Usa "Completa" o "Grande" para que se vean nítidas.', 'promos-feed' ),
+								options: [
+									{ label: __( 'Completa (máxima calidad)', 'promos-feed' ), value: 'full' },
+									{ label: __( 'Grande', 'promos-feed' ), value: 'large' },
+									{ label: __( 'Mediana', 'promos-feed' ), value: 'medium' },
+									{ label: __( 'Miniatura (más ligera)', 'promos-feed' ), value: 'thumbnail' },
+								],
+								onChange: function ( v ) {
+									setAttributes( { imageSize: v } );
+								},
+						  } )
+						: null,
 					el( SelectControl, {
 						label: __( 'Orden', 'promos-feed' ),
 						value: attributes.order,

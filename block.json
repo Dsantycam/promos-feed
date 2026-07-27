@@ -28,6 +28,7 @@
 		"bgColor":         { "type": "string",  "default": "#ffffff" },
 		"textColor":       { "type": "string",  "default": "#111827" },
 		"imageRatio":      { "type": "string",  "default": "1/1" },
+		"imageSize":       { "type": "string",  "default": "large" },
 		"order":           { "type": "string",  "default": "menu_order" },
 		"showImage":       { "type": "boolean", "default": true },
 		"showTitle":       { "type": "boolean", "default": true },

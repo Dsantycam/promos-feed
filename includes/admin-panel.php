@@ -286,8 +286,8 @@ function pf_render_admin_card( $post ) {
 	?>
 	<div class="pf-card" data-id="<?php echo (int) $data['id']; ?>" tabindex="0">
 		<div class="pf-card__media">
-			<?php if ( $data['thumb_url'] ) : ?>
-				<img src="<?php echo esc_url( $data['thumb_url'] ); ?>" alt="" loading="lazy">
+			<?php if ( $data['image_id'] ) : ?>
+				<?php echo wp_get_attachment_image( $data['image_id'], 'large', false, array( 'alt' => '', 'loading' => 'lazy' ) ); ?>
 			<?php else : ?>
 				<div class="pf-card__noimg"><span class="dashicons dashicons-format-image"></span></div>
 			<?php endif; ?>

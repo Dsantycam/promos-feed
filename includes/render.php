@@ -26,6 +26,7 @@ function pf_default_attrs() {
 		'bgColor'         => '#ffffff',
 		'textColor'       => '#111827',
 		'imageRatio'      => '1/1',
+		'imageSize'       => 'large',
 		'order'           => 'menu_order',
 		'showImage'       => true,
 		'showTitle'       => true,
@@ -60,6 +61,11 @@ function pf_normalize_attrs( $attrs ) {
 	$allowed_layouts = array( 'grid', 'carousel', 'featured', 'list', 'masonry' );
 	if ( ! in_array( $attrs['layout'], $allowed_layouts, true ) ) {
 		$attrs['layout'] = 'grid';
+	}
+
+	$allowed_sizes = array( 'thumbnail', 'medium', 'medium_large', 'large', 'full' );
+	if ( ! in_array( $attrs['imageSize'], $allowed_sizes, true ) ) {
+		$attrs['imageSize'] = 'large';
 	}
 
 	return $attrs;
@@ -196,8 +202,19 @@ function pf_render_promo_card_front( $data, $attrs, $featured = false ) {
 	if ( $has_image || $can( 'badge', 'showBadge', $data['badge'] ) || $can( 'price', 'showPrice', $data['discount'] ) ) {
 		echo '<div class="pf-item__media">';
 		if ( $has_image ) {
-			$img_src = $featured ? $data['image_url'] : ( $data['thumb_url'] ? $data['thumb_url'] : $data['image_url'] );
-			echo '<img src="' . esc_url( $img_src ) . '" alt="' . esc_attr( $data['title'] ) . '" loading="lazy">';
+			// Servimos la imagen en el tamaño elegido y con srcset (nitidez correcta,
+			// igual que el editor de WordPress), no una miniatura comprimida.
+			$size = $featured ? 'full' : $attrs['imageSize'];
+			echo wp_get_attachment_image(
+				$data['image_id'],
+				$size,
+				false,
+				array(
+					'alt'      => $data['title'],
+					'loading'  => 'lazy',
+					'decoding' => 'async',
+				)
+			);
 		} else {
 			echo '<div class="pf-item__noimg"></div>';
 		}

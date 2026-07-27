@@ -6,9 +6,13 @@
 #    1. Sube el número de versión en promos-feed.php (línea "Version:").
 #    2. Ejecuta:  ./release.ps1
 #
-#  El script construye el .zip del plugin (con la carpeta "promos-feed"
-#  dentro) y crea la release en GitHub. WordPress detectará la nueva
-#  versión y ofrecerá la actualización con un clic.
+#  Construye el .zip del plugin (carpeta interna "promos-feed", con rutas
+#  compatibles con WordPress) y crea la release en GitHub. WordPress
+#  detectará la nueva versión y ofrecerá la actualización con un clic.
+#
+#  Nota: se genera el zip con .NET creando las entradas con "/" explícitas.
+#  NO uses Compress-Archive: en Windows PowerShell escribe rutas con "\"
+#  que rompen la instalación en WordPress ("El archivo del plugin no existe").
 # =====================================================================
 
 $ErrorActionPreference = 'Stop'
@@ -22,22 +26,34 @@ $version = $match.Matches[0].Groups[1].Value
 $tag = "v$version"
 Write-Host "Versión detectada: $tag" -ForegroundColor Cyan
 
-# 2) Construir el .zip en /build con la carpeta interna "promos-feed".
-$build = Join-Path $root 'build'
-$dest  = Join-Path $build 'promos-feed'
-if (Test-Path $build) { Remove-Item $build -Recurse -Force }
-New-Item -ItemType Directory -Force -Path $dest | Out-Null
+# 2) Construir el .zip (rutas con "/" -> compatible con WordPress).
+Add-Type -AssemblyName System.IO.Compression | Out-Null
+Add-Type -AssemblyName System.IO.Compression.FileSystem | Out-Null
 
-$excluir = @('.git', 'build', 'release.ps1', '.gitignore')
-Get-ChildItem -Path $root -Force | Where-Object { $excluir -notcontains $_.Name } | ForEach-Object {
-    Copy-Item $_.FullName -Destination $dest -Recurse -Force
+$zipPath = Join-Path $root 'promos-feed.zip'
+$folder  = 'promos-feed'
+$exclude = @('.git', 'build', 'release.ps1', 'promos-feed.zip')
+$base    = (Resolve-Path $root).Path.TrimEnd('\')
+
+$fs  = [System.IO.File]::Open($zipPath, [System.IO.FileMode]::Create)
+$zip = New-Object System.IO.Compression.ZipArchive($fs, [System.IO.Compression.ZipArchiveMode]::Create)
+$n = 0
+Get-ChildItem -Path $root -Recurse -File -Force | ForEach-Object {
+    $rel = $_.FullName.Substring($base.Length + 1) -replace '\\', '/'
+    $top = ($rel -split '/')[0]
+    if ($exclude -contains $top) { return }
+    $entry  = $zip.CreateEntry("$folder/$rel", [System.IO.Compression.CompressionLevel]::Optimal)
+    $stream = $entry.Open()
+    $bytes  = [System.IO.File]::ReadAllBytes($_.FullName)
+    $stream.Write($bytes, 0, $bytes.Length)
+    $stream.Dispose()
+    $n++
 }
-
-$zip = Join-Path $build 'promos-feed.zip'
-Compress-Archive -Path $dest -DestinationPath $zip -Force
-Write-Host "ZIP construido: $zip" -ForegroundColor Green
+$zip.Dispose()
+$fs.Dispose()
+Write-Host "ZIP construido: $zipPath ($n archivos)" -ForegroundColor Green
 
 # 3) Crear la release en GitHub y adjuntar el .zip.
 Write-Host "Publicando release $tag en GitHub..." -ForegroundColor Cyan
-gh release create $tag $zip --title $tag --generate-notes
+gh release create $tag $zipPath --title $tag --generate-notes
 Write-Host "¡Listo! Release $tag publicada. WordPress ya podrá actualizar." -ForegroundColor Green

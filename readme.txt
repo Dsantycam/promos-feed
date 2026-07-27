@@ -7,7 +7,7 @@ Tags: promociones, ofertas, feed, carrusel, bloque, gutenberg
 Requires at least: 6.1
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,12 @@ Sí. El plugin ya incluye varios campos; solo tienes que activarlos en Ajustes y
 Automáticamente. Cada vez que se publica una nueva versión en GitHub, WordPress la detecta y podrás actualizar con un clic desde Plugins o Escritorio → Actualizaciones, sin volver a subir el archivo.
 
 == Changelog ==
+
+= 1.0.1 =
+* Arreglado: el modal de crear/editar ahora se cierra correctamente (X, Cancelar, Escape y clic fuera).
+* Arreglado: el botón "Guardar" del modal se veía en blanco por falta de estilos (variables de color fuera de alcance).
+* Mejora: tamaño y legibilidad de los botones.
+* Arreglado: empaquetado del .zip compatible con la instalación de WordPress.
 
 = 1.0.0 =
 * Versión inicial: panel de gestión a medida, campos configurables y bloque de feed con 5 layouts.

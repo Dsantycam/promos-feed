@@ -3,7 +3,7 @@
  * Plugin Name:       Promos Feed
  * Plugin URI:        https://github.com/Dsantycam/promos-feed
  * Description:        Gestiona promociones de forma simple y bonita, y muéstralas con un bloque de feed totalmente personalizable (grid, carrusel, destacado, lista y mosaico).
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least:  6.1
  * Requires PHP:      7.4
  * Author:            Santiago Camacho
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // No acceso directo.
 }
 
-define( 'PF_VERSION', '1.0.0' );
+define( 'PF_VERSION', '1.0.1' );
 define( 'PF_FILE', __FILE__ );
 define( 'PF_BASENAME', plugin_basename( __FILE__ ) );
 define( 'PF_DIR', plugin_dir_path( __FILE__ ) );

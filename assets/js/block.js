@@ -53,7 +53,11 @@
 		edit: function ( props ) {
 			var attributes = props.attributes;
 			var setAttributes = props.setAttributes;
-			var blockProps = useBlockProps();
+			// Quitamos el style del wrapper del editor: el espaciado (padding/margin)
+			// lo aplica el render del servidor, así evitamos que se duplique en la
+			// vista previa y coincide exactamente con el front.
+			var blockProps = Object.assign( {}, useBlockProps() );
+			delete blockProps.style;
 
 			var showColumns = [ 'grid', 'masonry', 'carousel' ].indexOf( attributes.layout ) !== -1;
 			var isCarousel = attributes.layout === 'carousel';
@@ -115,22 +119,33 @@
 							setAttributes( { imageRatio: v } );
 						},
 					} ),
-					isActive( 'image' )
-						? el( SelectControl, {
-								label: __( 'Calidad de imagen', 'promos-feed' ),
-								value: attributes.imageSize,
-								help: __( 'Usa "Completa" o "Grande" para que se vean nítidas.', 'promos-feed' ),
-								options: [
-									{ label: __( 'Completa (máxima calidad)', 'promos-feed' ), value: 'full' },
-									{ label: __( 'Grande', 'promos-feed' ), value: 'large' },
-									{ label: __( 'Mediana', 'promos-feed' ), value: 'medium' },
-									{ label: __( 'Miniatura (más ligera)', 'promos-feed' ), value: 'thumbnail' },
-								],
-								onChange: function ( v ) {
-									setAttributes( { imageSize: v } );
-								},
-						  } )
-						: null,
+					el( SelectControl, {
+						label: __( 'Calidad de imagen', 'promos-feed' ),
+						value: attributes.imageSize,
+						help: __( 'Usa "Completa" o "Grande" para que se vean nítidas.', 'promos-feed' ),
+						options: [
+							{ label: __( 'Completa (máxima calidad)', 'promos-feed' ), value: 'full' },
+							{ label: __( 'Grande', 'promos-feed' ), value: 'large' },
+							{ label: __( 'Mediana', 'promos-feed' ), value: 'medium' },
+							{ label: __( 'Miniatura (más ligera)', 'promos-feed' ), value: 'thumbnail' },
+						],
+						onChange: function ( v ) {
+							setAttributes( { imageSize: v } );
+						},
+					} ),
+					el( SelectControl, {
+						label: __( 'Ajuste de la imagen', 'promos-feed' ),
+						value: attributes.imageFit,
+						help: __( 'Cubrir recorta para llenar; Contener muestra la imagen completa.', 'promos-feed' ),
+						options: [
+							{ label: __( 'Cubrir (recorta y llena)', 'promos-feed' ), value: 'cover' },
+							{ label: __( 'Contener (imagen completa)', 'promos-feed' ), value: 'contain' },
+							{ label: __( 'Rellenar (estira)', 'promos-feed' ), value: 'fill' },
+						],
+						onChange: function ( v ) {
+							setAttributes( { imageFit: v } );
+						},
+					} ),
 					el( SelectControl, {
 						label: __( 'Orden', 'promos-feed' ),
 						value: attributes.order,

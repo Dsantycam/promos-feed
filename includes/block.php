@@ -76,5 +76,13 @@ function pf_block_render_callback( $attributes ) {
 	if ( ! is_admin() ) {
 		wp_enqueue_script( 'pf-feed-view' );
 	}
-	return pf_render_feed( $attributes );
+
+	$feed = pf_render_feed( $attributes );
+
+	// Aplicamos los atributos del bloque (alineación, padding y margin que el
+	// usuario configura en el editor) al contenedor. Sin esto, el espaciado
+	// no tenía ningún efecto en el front.
+	$wrapper = get_block_wrapper_attributes();
+
+	return '<div ' . $wrapper . '>' . $feed . '</div>';
 }

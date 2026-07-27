@@ -27,6 +27,7 @@ function pf_default_attrs() {
 		'textColor'       => '#111827',
 		'imageRatio'      => '1/1',
 		'imageSize'       => 'large',
+		'imageFit'        => 'cover',
 		'order'           => 'menu_order',
 		'showImage'       => true,
 		'showTitle'       => true,
@@ -66,6 +67,11 @@ function pf_normalize_attrs( $attrs ) {
 	$allowed_sizes = array( 'thumbnail', 'medium', 'medium_large', 'large', 'full' );
 	if ( ! in_array( $attrs['imageSize'], $allowed_sizes, true ) ) {
 		$attrs['imageSize'] = 'large';
+	}
+
+	$allowed_fits = array( 'cover', 'contain', 'fill' );
+	if ( ! in_array( $attrs['imageFit'], $allowed_fits, true ) ) {
+		$attrs['imageFit'] = 'cover';
 	}
 
 	return $attrs;
@@ -109,7 +115,7 @@ function pf_render_feed( $attrs ) {
 
 	// Variables CSS que controlan toda la estética.
 	$style = sprintf(
-		'--pf-cols:%d;--pf-gap:%dpx;--pf-radius:%dpx;--pf-accent:%s;--pf-bg:%s;--pf-text:%s;--pf-ratio:%s;--pf-shadow:%s;',
+		'--pf-cols:%d;--pf-gap:%dpx;--pf-radius:%dpx;--pf-accent:%s;--pf-bg:%s;--pf-text:%s;--pf-ratio:%s;--pf-fit:%s;--pf-shadow:%s;',
 		$attrs['columns'],
 		$attrs['gap'],
 		$attrs['radius'],
@@ -117,6 +123,7 @@ function pf_render_feed( $attrs ) {
 		esc_attr( $attrs['bgColor'] ),
 		esc_attr( $attrs['textColor'] ),
 		esc_attr( $attrs['imageRatio'] ),
+		esc_attr( $attrs['imageFit'] ),
 		$attrs['shadow'] ? '0 8px 30px rgba(0,0,0,.10)' : 'none'
 	);
 

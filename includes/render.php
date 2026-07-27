@@ -28,6 +28,10 @@ function pf_default_attrs() {
 		'imageRatio'      => '1/1',
 		'imageSize'       => 'large',
 		'imageFit'        => 'cover',
+		'imageHeight'     => 0,
+		'imagePosition'   => 'center',
+		'lightbox'        => false,
+		'hoverEffect'     => 'lift',
 		'order'           => 'menu_order',
 		'showImage'       => true,
 		'showTitle'       => true,
@@ -58,6 +62,17 @@ function pf_normalize_attrs( $attrs ) {
 	$attrs['gap']           = max( 0, min( 64, (int) $attrs['gap'] ) );
 	$attrs['radius']        = max( 0, min( 40, (int) $attrs['radius'] ) );
 	$attrs['autoplaySpeed'] = max( 1, min( 15, (int) $attrs['autoplaySpeed'] ) );
+	$attrs['imageHeight']   = max( 0, min( 900, (int) $attrs['imageHeight'] ) );
+
+	$allowed_positions = array( 'center', 'top', 'bottom', 'left', 'right' );
+	if ( ! in_array( $attrs['imagePosition'], $allowed_positions, true ) ) {
+		$attrs['imagePosition'] = 'center';
+	}
+
+	$allowed_hovers = array( 'lift', 'zoom', 'darken', 'none' );
+	if ( ! in_array( $attrs['hoverEffect'], $allowed_hovers, true ) ) {
+		$attrs['hoverEffect'] = 'lift';
+	}
 
 	$allowed_layouts = array( 'grid', 'carousel', 'featured', 'list', 'masonry' );
 	if ( ! in_array( $attrs['layout'], $allowed_layouts, true ) ) {
@@ -115,7 +130,7 @@ function pf_render_feed( $attrs ) {
 
 	// Variables CSS que controlan toda la estética.
 	$style = sprintf(
-		'--pf-cols:%d;--pf-gap:%dpx;--pf-radius:%dpx;--pf-accent:%s;--pf-bg:%s;--pf-text:%s;--pf-ratio:%s;--pf-fit:%s;--pf-shadow:%s;',
+		'--pf-cols:%d;--pf-gap:%dpx;--pf-radius:%dpx;--pf-accent:%s;--pf-bg:%s;--pf-text:%s;--pf-ratio:%s;--pf-fit:%s;--pf-pos:%s;--pf-shadow:%s;',
 		$attrs['columns'],
 		$attrs['gap'],
 		$attrs['radius'],
@@ -124,6 +139,7 @@ function pf_render_feed( $attrs ) {
 		esc_attr( $attrs['textColor'] ),
 		esc_attr( $attrs['imageRatio'] ),
 		esc_attr( $attrs['imageFit'] ),
+		esc_attr( $attrs['imagePosition'] ),
 		$attrs['shadow'] ? '0 8px 30px rgba(0,0,0,.10)' : 'none'
 	);
 
@@ -132,11 +148,23 @@ function pf_render_feed( $attrs ) {
 		$classes[] = 'has-shadow';
 	}
 
+	// Altura de imagen manual (0 = automática según la proporción).
+	if ( $attrs['imageHeight'] > 0 ) {
+		$classes[] = 'has-fixed-height';
+		$style     .= sprintf( '--pf-media-h:%dpx;', $attrs['imageHeight'] );
+	}
+
 	$uid = 'pf-' . wp_generate_password( 6, false, false );
 
-	$data_attrs = '';
+	// Atributos de datos comunes: efecto hover y lightbox.
+	$data_attrs = sprintf(
+		' data-hover="%s" data-lightbox="%s"',
+		esc_attr( $attrs['hoverEffect'] ),
+		! empty( $attrs['lightbox'] ) ? '1' : '0'
+	);
+
 	if ( 'carousel' === $attrs['layout'] ) {
-		$data_attrs = sprintf(
+		$data_attrs .= sprintf(
 			' data-autoplay="%s" data-speed="%d" data-arrows="%s" data-dots="%s"',
 			$attrs['autoplay'] ? '1' : '0',
 			$attrs['autoplaySpeed'],
@@ -207,7 +235,16 @@ function pf_render_promo_card_front( $data, $attrs, $featured = false ) {
 
 	// Media.
 	if ( $has_image || $can( 'badge', 'showBadge', $data['badge'] ) || $can( 'price', 'showPrice', $data['discount'] ) ) {
-		echo '<div class="pf-item__media">';
+		$media_class = 'pf-item__media';
+		$media_attr  = '';
+		if ( $has_image && ! empty( $attrs['lightbox'] ) ) {
+			$full = wp_get_attachment_image_url( $data['image_id'], 'full' );
+			if ( $full ) {
+				$media_class .= ' is-zoomable';
+				$media_attr   = ' data-pf-full="' . esc_url( $full ) . '" role="button" tabindex="0" aria-label="' . esc_attr__( 'Ampliar imagen', 'promos-feed' ) . '"';
+			}
+		}
+		echo '<div class="' . esc_attr( $media_class ) . '"' . $media_attr . '>'; // phpcs:ignore
 		if ( $has_image ) {
 			// Servimos la imagen en el tamaño elegido y con srcset (nitidez correcta,
 			// igual que el editor de WordPress), no una miniatura comprimida.

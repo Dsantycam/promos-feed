@@ -112,9 +112,68 @@
 		window.addEventListener( 'resize', update );
 	}
 
+	/* ---------------- Lightbox (ampliar imagen al clic) ---------------- */
+	var lightbox = null;
+
+	function ensureLightbox() {
+		if ( lightbox ) {
+			return lightbox;
+		}
+		lightbox = document.createElement( 'div' );
+		lightbox.className = 'pf-lightbox';
+		lightbox.innerHTML = '<button type="button" class="pf-lightbox__close" aria-label="Cerrar">×</button><img alt="">';
+		document.body.appendChild( lightbox );
+
+		function close() {
+			lightbox.classList.remove( 'is-open' );
+		}
+		// Cerrar al hacer clic en el fondo o en la X (no al clicar la propia imagen).
+		lightbox.addEventListener( 'click', function ( e ) {
+			if ( e.target === lightbox || e.target.classList.contains( 'pf-lightbox__close' ) ) {
+				close();
+			}
+		} );
+		document.addEventListener( 'keydown', function ( e ) {
+			if ( e.key === 'Escape' ) {
+				close();
+			}
+		} );
+		return lightbox;
+	}
+
+	function openLightbox( url ) {
+		var lb = ensureLightbox();
+		lb.querySelector( 'img' ).src = url;
+		lb.classList.add( 'is-open' );
+	}
+
+	function initLightbox() {
+		if ( ! document.querySelector( '.pf-feed[data-lightbox="1"]' ) ) {
+			return;
+		}
+		document.addEventListener( 'click', function ( e ) {
+			var media = e.target.closest ? e.target.closest( '.pf-item__media.is-zoomable[data-pf-full]' ) : null;
+			if ( media ) {
+				e.preventDefault();
+				openLightbox( media.getAttribute( 'data-pf-full' ) );
+			}
+		} );
+		// Accesibilidad: abrir con Enter/Espacio cuando el foco está en la imagen.
+		document.addEventListener( 'keydown', function ( e ) {
+			if ( ( e.key === 'Enter' || e.key === ' ' ) && e.target.classList && e.target.classList.contains( 'is-zoomable' ) ) {
+				var full = e.target.getAttribute( 'data-pf-full' );
+				if ( full ) {
+					e.preventDefault();
+					openLightbox( full );
+				}
+			}
+		} );
+	}
+
 	function initAll() {
 		var feeds = document.querySelectorAll( '.pf-feed--carousel' );
 		Array.prototype.forEach.call( feeds, initCarousel );
+		initLightbox();
 	}
 
 	if ( document.readyState === 'loading' ) {

@@ -7,7 +7,7 @@ Tags: promociones, ofertas, feed, carrusel, bloque, gutenberg
 Requires at least: 6.1
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,13 @@ Sí. El plugin ya incluye varios campos; solo tienes que activarlos en Ajustes y
 Automáticamente. Cada vez que se publica una nueva versión en GitHub, WordPress la detecta y podrás actualizar con un clic desde Plugins o Escritorio → Actualizaciones, sin volver a subir el archivo.
 
 == Changelog ==
+
+= 1.0.4 =
+* Nuevo: altura de imagen manual (px) para hacer las imágenes más grandes o pequeñas según dónde las pongas.
+* Nuevo: posición del recorte (centro, arriba, abajo, izquierda, derecha).
+* Nuevo: lightbox opcional (ampliar la imagen al hacer clic).
+* Nuevo: efecto al pasar el ratón elegible (elevar, zoom, oscurecer o ninguno).
+* Todo es opcional y configurable desde el bloque.
 
 = 1.0.3 =
 * Arreglado: los ajustes de espaciado (padding y margin) del bloque ahora sí se aplican en el front.

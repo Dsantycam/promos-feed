@@ -146,6 +146,32 @@
 							setAttributes( { imageFit: v } );
 						},
 					} ),
+					el( RangeControl, {
+						label: __( 'Altura de imagen (px)', 'promos-feed' ),
+						value: attributes.imageHeight,
+						min: 0,
+						max: 900,
+						step: 10,
+						help: __( '0 = automática según la proporción. Súbela para imágenes más grandes.', 'promos-feed' ),
+						onChange: function ( v ) {
+							setAttributes( { imageHeight: v } );
+						},
+					} ),
+					el( SelectControl, {
+						label: __( 'Posición del recorte', 'promos-feed' ),
+						value: attributes.imagePosition,
+						help: __( 'Con "Cubrir", qué parte de la imagen se ve.', 'promos-feed' ),
+						options: [
+							{ label: __( 'Centro', 'promos-feed' ), value: 'center' },
+							{ label: __( 'Arriba', 'promos-feed' ), value: 'top' },
+							{ label: __( 'Abajo', 'promos-feed' ), value: 'bottom' },
+							{ label: __( 'Izquierda', 'promos-feed' ), value: 'left' },
+							{ label: __( 'Derecha', 'promos-feed' ), value: 'right' },
+						],
+						onChange: function ( v ) {
+							setAttributes( { imagePosition: v } );
+						},
+					} ),
 					el( SelectControl, {
 						label: __( 'Orden', 'promos-feed' ),
 						value: attributes.order,
@@ -219,6 +245,32 @@
 						},
 					],
 				} ),
+
+				// --- Panel: Interacción ---
+				el(
+					PanelBody,
+					{ title: __( 'Interacción', 'promos-feed' ), initialOpen: false },
+					el( SelectControl, {
+						label: __( 'Efecto al pasar el ratón', 'promos-feed' ),
+						value: attributes.hoverEffect,
+						options: [
+							{ label: __( 'Elevar', 'promos-feed' ), value: 'lift' },
+							{ label: __( 'Zoom de imagen', 'promos-feed' ), value: 'zoom' },
+							{ label: __( 'Oscurecer', 'promos-feed' ), value: 'darken' },
+							{ label: __( 'Ninguno', 'promos-feed' ), value: 'none' },
+						],
+						onChange: function ( v ) {
+							setAttributes( { hoverEffect: v } );
+						},
+					} ),
+					el( ToggleControl, {
+						label: __( 'Ampliar imagen al hacer clic (lightbox)', 'promos-feed' ),
+						checked: !! attributes.lightbox,
+						onChange: function ( v ) {
+							setAttributes( { lightbox: v } );
+						},
+					} )
+				),
 
 				// --- Panel: Contenido visible ---
 				el(
